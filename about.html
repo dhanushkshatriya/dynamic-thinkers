@@ -1,83 +1,563 @@
+<!-- about.html - with Three.js Galaxy Background + Insane Pop & Glow Animations -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - AgroDetect AI</title>
+    <title>About · AgroDetect AI</title>
+    <!-- Google Fonts + Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
+        /* ----- RESET & GLOBAL ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0c0a1a;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.5;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Three.js canvas container */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* floating blobs (behind stars) */
+        .blob {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -2;
+            animation: float 30s infinite alternate ease-in-out;
+        }
+        .blob-1 {
+            top: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%);
+        }
+        .blob-2 {
+            bottom: -300px;
+            right: -200px;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
+            animation-delay: -5s;
+        }
+        .blob-3 {
+            top: 40%;
+            left: 30%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(236,72,153,0.2) 0%, transparent 70%);
+            animation-delay: -12s;
+        }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        /* navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12, 10, 26, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(139,92,246,0.3);
+            padding: 1rem 2rem;
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c084fc, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+            transition: 0.2s;
+            position: relative;
+        }
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #c084fc, #8b5cf6);
+            transition: 0.3s;
+        }
+        .nav-links a:hover {
+            color: white;
+        }
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        .btn-outline-small {
+            border: 1px solid rgba(139,92,246,0.5);
+            background: transparent;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-outline-small:hover {
+            background: rgba(139,92,246,0.2);
+            border-color: #8b5cf6;
+        }
+        /* subtle glow on try now button */
+        .btn-outline-small::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(192,132,252,0.4) 0%, transparent 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            animation: btnGlow 3s infinite;
+            pointer-events: none;
+        }
+
+        /* container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* page header */
+        .page-header {
+            text-align: center;
+            margin: 3rem 0 2rem;
+        }
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #d8b4fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(139,92,246,0.5);
+            animation: wordPop 1.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+            opacity: 0;
+            transform-origin: center;
+        }
+        .page-sub {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.6);
+            max-width: 700px;
+            margin: 1rem auto 0;
+            animation: fadeUp 0.8s 0.1s forwards;
+            opacity: 0;
+        }
+
+        /* about grid */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin: 4rem 0;
+        }
+        .about-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #c084fc, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: wordPop 1s 0.2s forwards;
+            opacity: 0;
+        }
+        .about-content p {
+            margin-bottom: 1.2rem;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.7;
+            font-size: 1.1rem;
+            animation: fadeUp 0.8s 0.3s forwards;
+            opacity: 0;
+        }
+        .about-image {
+            background: rgba(20,15,35,0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 2.5rem;
+            padding: 1rem;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .about-image:hover {
+            transform: translateY(-8px);
+            border-color: #c084fc;
+            box-shadow: 0 25px 40px -15px #8b5cf6;
+        }
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(192,132,252,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            border-radius: 2rem;
+        }
+        .about-image:hover::before {
+            opacity: 0.5;
+            animation: rotateGlow 4s infinite linear;
+        }
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .about-image img {
+            width: 100%;
+            border-radius: 2rem;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* team section */
+        .team-section {
+            margin: 6rem 0;
+        }
+        .team-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #d8b4fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: wordPop 1s 0.1s forwards;
+            opacity: 0;
+        }
+        .team-section p {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            animation: fadeUp 0.8s 0.2s forwards;
+            opacity: 0;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .team-member {
+            background: rgba(20,15,35,0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 2.5rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .team-member:hover {
+            transform: translateY(-10px);
+            border-color: #c084fc;
+            box-shadow: 0 30px 40px -20px #8b5cf6;
+        }
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(192,132,252,0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+        .team-member:hover::before {
+            opacity: 0.4;
+        }
         .team-member img {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 15px;
+            border: 3px solid #8b5cf6;
+            margin-bottom: 1.2rem;
+            transition: 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        .team-member:hover img {
+            border-color: #c084fc;
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 0 30px #c084fc;
+            animation: imgGlow 1s infinite alternate;
+        }
+        @keyframes imgGlow {
+            from { box-shadow: 0 0 10px #c084fc; }
+            to { box-shadow: 0 0 40px #c084fc, 0 0 60px #8b5cf6; }
+        }
+        .team-member h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+            background: linear-gradient(135deg, #ffffff, #d8b4fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: 0.3s;
+        }
+        .team-member:hover h3 {
+            text-shadow: 0 0 20px rgba(192,132,252,0.8);
+            transform: scale(1.05);
+        }
+        .team-member .role {
+            font-size: 1rem;
+            color: #c084fc;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: normal;
+            word-break: break-word;
+            transition: 0.3s;
+        }
+        .team-member:hover .role {
+            text-shadow: 0 0 15px #c084fc;
+        }
+
+        /* footer */
+        .footer {
+            margin-top: 6rem;
+            padding: 3rem 2rem 2rem;
+            background: rgba(8,6,18,0.7);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(139,92,246,0.2);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .footer-col h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #c084fc;
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+        .footer-col ul li a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .footer-col ul li a:hover {
+            color: white;
+            padding-left: 5px;
+            text-shadow: 0 0 10px #c084fc;
+        }
+        .footer-col ul li i {
+            width: 20px;
+            margin-right: 8px;
+            color: #8b5cf6;
+        }
+        .copyright {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(139,92,246,0.2);
+            font-size: 0.9rem;
+        }
+
+        /* ===== INSANE ANIMATIONS ===== */
+        @keyframes wordPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.2) translateY(100px);
+                text-shadow: 0 0 0 rgba(192,132,252,0);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1.1) translateY(-10px);
+                text-shadow: 0 0 30px rgba(192,132,252,0.9), 0 0 60px #8b5cf6;
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                text-shadow: 0 0 40px rgba(139,92,246,0.5);
+            }
+        }
+
+        @keyframes glowPulse {
+            0% { text-shadow: 0 0 10px #c084fc, 0 0 20px #8b5cf6; }
+            50% { text-shadow: 0 0 30px #c084fc, 0 0 60px #8b5cf6; transform: scale(1.05); }
+            100% { text-shadow: 0 0 10px #c084fc, 0 0 20px #8b5cf6; }
+        }
+
+        @keyframes btnGlow {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            .page-title {
+                font-size: 2.5rem;
+            }
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Three.js canvas container -->
+    <div id="canvas-container"></div>
+
+    <!-- Floating blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="container">
-            <div class="logo">AgroDetect AI</div>
+        <div class="nav-container">
+            <div class="logo">agrodetect<span style="color:white;">.</span>ai</div>
             <div class="nav-links">
                 <a href="{{ url_for('home') }}">Home</a>
                 <a href="{{ url_for('about') }}">About</a>
-                <a href="{{ url_for('upload') }}">Detect Disease</a>
+                <a href="{{ url_for('upload') }}">Upload</a>
             </div>
+            <a href="{{ url_for('upload') }}" class="btn-outline-small">Try Now</a>
         </div>
     </nav>
 
     <main>
+        <!-- Page Header -->
+        <div class="container page-header">
+            <h1 class="page-title">About AgroDetect AI</h1>
+            <p class="page-sub">committed to sustainable agriculture through innovation.</p>
+        </div>
+
+        <!-- About Content -->
         <div class="container">
             <div class="about-grid">
                 <div class="about-content">
                     <h2>Empowering Farmers with AI</h2>
                     <p>At AgroDetect AI, we believe that technology should be accessible to everyone. Our mission is to provide farmers and agricultural professionals with a powerful tool to detect plant diseases early, saving crops and reducing losses.</p>
-                    <p>Our deep learning model has been trained on thousands of images across 50+ diseases, achieving over 95% accuracy in lab conditions. We continuously update our dataset to include new diseases and crops.</p>
+                    <p>Our deep learning model has been trained on thousands of images across 38 disease classes, achieving over 98% accuracy in lab conditions. We continuously update our dataset to include new diseases and crops.</p>
                     <p>Founded in 2025 by a team of AI researchers and agronomists, we are committed to sustainable agriculture through innovation.</p>
                 </div>
-                <div class="about-image glass-card">
-                    <img src="{{ url_for('static', filename='images/about-bg.jpg') }}" alt="Farmer using tablet in field" style="width:100%; border-radius:24px; object-fit: cover;">
+                <div class="about-image">
+                    <img src="{{ url_for('static', filename='image/about-bg.jpeg') }}" alt="Farmer using tablet in field" onerror="this.onerror=null; this.src='https://placehold.co/600x400/2a1f4a/8b5cf6?text=AgroDetect+AI'">
                 </div>
             </div>
         </div>
 
-        <section class="container">
-            <h2 style="text-align:center; font-size:2.5rem; margin:60px 0 20px;">Meet Our Team</h2>
+        <!-- Team Section -->
+        <section class="container team-section">
+            <h2>Meet Our Team</h2>
+            <p>The passionate people behind AgroDetect AI</p>
+
             <div class="team-grid">
-                <div class="team-member glass-card">
-                    <img src="{{ url_for('static', filename='images/jayanth.jpg') }}" alt="JAYANTH .D">
-                    <h3>JAYANTH .D </h3>
-                    <p>FRONTEND(UI/UX)</p>
-                    <p>SAMBHRAM IT , Cyber Security. </p>
+                <div class="team-member">
+                    <img src="{{ url_for('static', filename='image/jayanth.jpeg') }}" alt="JAYANTH.D" onerror="this.onerror=null; this.src='https://placehold.co/150x150/2a1f4a/8b5cf6?text=JD'">
+                    <h3>JAYANTH.D</h3>
+                    <div class="role">FRONTEND (UI/UX)</div>
+                     <h5><p>SAMBHRAM IT , Cyber Security. </p></h5>
                 </div>
-                <div class="team-member glass-card">
-                    <img src="{{ url_for('static', filename='images/dhanush.jpg') }}" alt="DHANUSH .R">
-                    <h3>DHANUSH .R </h3>
-                    <p>BACKEND </p>
-                    <p>SAMBHRAM IT , Cyber Security. </p>
+                <div class="team-member">
+                    <img src="{{ url_for('static', filename='image/dhanush.jpeg') }}" alt="DHANUSH.R" onerror="this.onerror=null; this.src='https://placehold.co/150x150/2a1f4a/8b5cf6?text=DR'">
+                    <h3>DHANUSH.R</h3>
+                    <div class="role">BACKEND</div>
+                     <h5><p>SAMBHRAM IT , Cyber Security. </p></h5>
                 </div>
-                <div class="team-member glass-card">
-                    <img src="{{ url_for('static', filename='images/pravigna.jpg') }}" alt="PRAVIGNA">
-                    <h3>PRAVIGNA </h3>
-                    <p>TEAM LEAD(PROBLEM STATEMENT SOLUTION) </p>
-                    <p>CHANAKYA UNIVERSITY , Electronics. </p>
+                <div class="team-member">
+                    <img src="{{ url_for('static', filename='image/pravigna.jpeg') }}" alt="PRAVIGNA" onerror="this.onerror=null; this.src='https://placehold.co/150x150/2a1f4a/8b5cf6?text=PK'">
+                    <h3>PRAVIGNA</h3>
+                    <div class="role">TEAM LEAD (PROBLEM STATEMENT SOLUTION)</div>
+                      <h5><p>CHANAKYA UNIVERSITY , Electronics. </p></h5>
                 </div>
-                <div class="team-member glass-card">
-                    <img src="{{ url_for('static', filename='images/sangeetha.jpg') }}" alt="SANGEETHA">
-                    <h3>SANGEETHA </h3>
-                    <p> EXCECUTION AND IDEAS </p>
-                    <p>CHANAKYA UNIVERSITY , Electronics. </p>
+                <div class="team-member">
+                    <img src="{{ url_for('static', filename='image/sangeetha.jpeg') }}" alt="SANGEETHA" onerror="this.onerror=null; this.src='https://placehold.co/150x150/2a1f4a/8b5cf6?text=SK'">
+                    <h3>SANGEETHA</h3>
+                    <div class="role">EXECUTION AND IDEAS</div>
+                      <h5><p>CHANAKYA UNIVERSITY , Electronics. </p></h5>
+
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -106,9 +586,67 @@
                 </div>
             </div>
             <div class="copyright">
-                &copy; 2025 AgroDetect AI. All rights reserved.
+                &copy; 2026 AgroDetect AI. All rights reserved.
             </div>
         </div>
     </footer>
+
+    <script>
+        // Three.js Galaxy Background (auto-rotate, no mouse interaction)
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount * 3; i += 3) {
+            posArray[i] = (Math.random() - 0.5) * 30;
+            posArray[i+1] = (Math.random() - 0.5) * 30;
+            posArray[i+2] = (Math.random() - 0.5) * 30;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0xa855f7,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.0005;
+            particlesMesh.rotation.x += 0.0003;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Scroll animation for elements that weren't animated on load
+        const faders = document.querySelectorAll('.team-member, .about-content p, .about-image');
+        const appearOptions = { threshold: 0.2, rootMargin: '0px 0px -50px 0px' };
+        const appearOnScroll = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('fade-up');
+                observer.unobserve(entry.target);
+            });
+        }, appearOptions);
+        faders.forEach(fader => appearOnScroll.observe(fader));
+    </script>
 </body>
 </html>
