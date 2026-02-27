@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload - AgroDetect AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-fade-in">
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">AgroDetect AI</div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('upload') }}">Detect Disease</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="upload-container animated-slide-up" style="opacity: 1;">
+            <h2 style="text-align: center; margin-bottom: 24px; color: var(--white);">Identify Plant Disease</h2>
+            <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" id="upload-form">
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p id="upload-text">Click or Drag & Drop Leaf Photo</p>
+                    <input type="file" name="file" id="file-input" class="file-input" accept="image/*" onchange="previewFile()">
+                    <img id="image-preview" class="preview-image" style="display: none;">
+                </div>
+                
+                <div id="loading" class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 15px; color: var(--primary-light);">AI is analyzing your crop...</p>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Analyze Image</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function previewFile() {
+            const preview = document.getElementById('image-preview');
+            const file = document.getElementById('file-input').files[0];
+            const reader = new FileReader();
+            const text = document.getElementById('upload-text');
+
+            reader.onloadend = function () {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+                text.style.display = 'none';
+            }
+
+            if (file) { reader.readAsDataURL(file); }
+        }
+
+        document.getElementById('upload-form').onsubmit = function() {
+            document.getElementById('loading').style.display = 'block';
+            document.querySelector('.btn-primary').style.opacity = '0.5';
+            document.querySelector('.btn-primary').innerText = 'Processing...';
+        };
+    </script>
+</body>
+</html>

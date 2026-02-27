@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroDetect AI - Smart Plant Disease Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="page-fade-in">
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">AgroDetect AI</div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('upload') }}">Detect Disease</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1 class="pulse-text">AI-Powered Plant Disease Detection</h1>
+                <p>Protect your crops with instant, accurate disease identification. Just upload a leaf photo and get results in seconds.</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('upload') }}" class="btn btn-primary">Get Started</a>
+                    <a href="{{ url_for('about') }}" class="btn btn-outline">Learn More</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="features-grid">
+                <div class="feature-card glass-card reveal delay-100">
+                    <i class="fas fa-camera feature-icon"></i>
+                    <h3>Instant Detection</h3>
+                    <p>Upload a photo and our AI identifies diseases in real-time with high accuracy.</p>
+                </div>
+                <div class="feature-card glass-card reveal delay-200">
+                    <i class="fas fa-database feature-icon"></i>
+                    <h3>50+ Diseases</h3>
+                    <p>Trained on a comprehensive dataset of common plant diseases across multiple crops.</p>
+                </div>
+                <div class="feature-card glass-card reveal delay-300">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h3>Confidence Score</h3>
+                    <p>Get a precise confidence percentage along with treatment recommendations.</p>
+                </div>
+                <div class="feature-card glass-card reveal delay-400">
+                    <i class="fas fa-mobile-alt feature-icon"></i>
+                    <h3>Mobile Friendly</h3>
+                    <p>Use on any device – perfect for field work and quick checks.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container reveal">
+            <div class="stats-section glass-card fade-in-scale">
+                <div class="stat-item">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Farmers Helped</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Diseases</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Availability</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>AgroDetect AI</h4>
+                    <ul>
+                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
+                        <li><a href="{{ url_for('upload') }}">Detection</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> hello@agrodetect.ai</li>
+                        <li><i class="fas fa-phone"></i> +91 8919136112</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow Us</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 AgroDetect AI. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for Scroll Animations
+        const observerOptions = { threshold: 0.15 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Smooth Page Out Transition
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', e => {
+                if (link.hostname === window.location.hostname && !link.hash && !link.target) {
+                    e.preventDefault();
+                    const destination = link.href;
+                    document.body.style.opacity = '0';
+                    document.body.style.transition = 'opacity 0.4s ease';
+                    setTimeout(() => { window.location.href = destination; }, 400);
+                }
+            });
+        });
+
+        // Hover Glow Effect for Glass Cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.onmousemove = e => {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+            };
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - AgroDetect AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <style>
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">AgroDetect AI</div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('upload') }}">Detect Disease</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <h2>Empowering Farmers with AI</h2>
+                    <p>At AgroDetect AI, we believe that technology should be accessible to everyone. Our mission is to provide farmers and agricultural professionals with a powerful tool to detect plant diseases early, saving crops and reducing losses.</p>
+                    <p>Our deep learning model has been trained on thousands of images across 50+ diseases, achieving over 95% accuracy in lab conditions. We continuously update our dataset to include new diseases and crops.</p>
+                    <p>Founded in 2025 by a team of AI researchers and agronomists, we are committed to sustainable agriculture through innovation.</p>
+                </div>
+                <div class="about-image glass-card">
+                    <img src="{{ url_for('static', filename='images/about-bg.jpg') }}" alt="Farmer using tablet in field" style="width:100%; border-radius:24px; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+
+        <section class="container">
+            <h2 style="text-align:center; font-size:2.5rem; margin:60px 0 20px;">Meet Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member glass-card">
+                    <img src="{{ url_for('static', filename='images/jayanth.jpg') }}" alt="JAYANTH .D">
+                    <h3>JAYANTH .D </h3>
+                    <p>FRONTEND(UI/UX)</p>
+                    <p>SAMBHRAM IT , Cyber Security. </p>
+                </div>
+                <div class="team-member glass-card">
+                    <img src="{{ url_for('static', filename='images/dhanush.jpg') }}" alt="DHANUSH .R">
+                    <h3>DHANUSH .R </h3>
+                    <p>BACKEND </p>
+                    <p>SAMBHRAM IT , Cyber Security. </p>
+                </div>
+                <div class="team-member glass-card">
+                    <img src="{{ url_for('static', filename='images/pravigna.jpg') }}" alt="PRAVIGNA">
+                    <h3>PRAVIGNA </h3>
+                    <p>TEAM LEAD(PROBLEM STATEMENT SOLUTION) </p>
+                    <p>CHANAKYA UNIVERSITY , Electronics. </p>
+                </div>
+                <div class="team-member glass-card">
+                    <img src="{{ url_for('static', filename='images/sangeetha.jpg') }}" alt="SANGEETHA">
+                    <h3>SANGEETHA </h3>
+                    <p> EXCECUTION AND IDEAS </p>
+                    <p>CHANAKYA UNIVERSITY , Electronics. </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>AgroDetect AI</h4>
+                    <ul>
+                        <li><a href="{{ url_for('home') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
+                        <li><a href="{{ url_for('upload') }}">Detection</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> hello@agrodetect.ai</li>
+                        <li><i class="fas fa-phone"></i> +91 8919136112</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Follow Us</h4>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 AgroDetect AI. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
