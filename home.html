@@ -1,152 +1,648 @@
+<!-- home.html - Premium Redesign + Galaxy Background + Insane Pop & Glow Animations -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroDetect AI - Smart Plant Disease Detection</title>
+    <title>AgroDetect AI · Intelligent Plant Disease Detection</title>
+    <!-- Google Fonts + Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        /* ----- RESET & GLOBAL ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0c0a1a;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.5;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Three.js canvas container */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* floating blobs (now behind stars) */
+        .blob {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -2;
+            animation: float 30s infinite alternate ease-in-out;
+        }
+        .blob-1 {
+            top: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(168,85,247,0.4) 0%, transparent 70%);
+        }
+        .blob-2 {
+            bottom: -300px;
+            right: -200px;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
+            animation-delay: -5s;
+        }
+        .blob-3 {
+            top: 40%;
+            left: 30%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(236,72,153,0.2) 0%, transparent 70%);
+            animation-delay: -12s;
+        }
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        /* navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12, 10, 26, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(139,92,246,0.3);
+            padding: 1rem 2rem;
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c084fc, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+            transition: 0.2s;
+            position: relative;
+        }
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #c084fc, #8b5cf6);
+            transition: 0.3s;
+        }
+        .nav-links a:hover {
+            color: white;
+        }
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        .btn-outline-small {
+            border: 1px solid rgba(139,92,246,0.5);
+            background: transparent;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-outline-small:hover {
+            background: rgba(139,92,246,0.2);
+            border-color: #8b5cf6;
+        }
+
+        /* container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* hero section */
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #d8b4fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(139,92,246,0.5);
+            /* Pop animation on load */
+            animation: wordPop 1.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) forwards;
+            opacity: 0; /* start invisible */
+            transform-origin: center;
+        }
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            animation: fadeUp 1s 0.1s forwards;
+            opacity: 0;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            animation: fadeUp 1s 0.2s forwards;
+            opacity: 0;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6, #c084fc);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 10px 25px -5px #8b5cf6;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 30px -5px #8b5cf6;
+        }
+        /* Glowing pulse on primary button */
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            animation: btnGlow 2s infinite;
+        }
+        @keyframes btnGlow {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(139,92,246,0.6);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-outline:hover {
+            background: rgba(139,92,246,0.15);
+            border-color: #c084fc;
+        }
+
+        /* stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 6rem 0;
+        }
+        .stat-card {
+            background: rgba(20,15,35,0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 2rem;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: #c084fc;
+            box-shadow: 0 25px 40px -15px #8b5cf6;
+        }
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c084fc, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            animation: glowPulse 2.5s infinite ease-in-out;
+            display: inline-block;
+        }
+        .stat-label {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* features */
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #ffffff, #d8b4fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: wordPop 1s 0.2s forwards;
+            opacity: 0;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+        .feature-card {
+            background: rgba(20,15,35,0.5);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 2.5rem;
+            padding: 2.5rem 2rem;
+            transition: 0.4s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #c084fc;
+            box-shadow: 0 30px 40px -20px #8b5cf6;
+        }
+        /* Glowing border effect on hover */
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: var(--y, 0);
+            left: var(--x, 0);
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(192,132,252,0.6) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        .feature-card:hover::before {
+            opacity: 0.3;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: #c084fc;
+            transition: 0.3s;
+            filter: drop-shadow(0 0 0px #c084fc);
+        }
+        .feature-card:hover .feature-icon {
+            transform: scale(1.2) rotate(5deg);
+            filter: drop-shadow(0 0 15px #c084fc);
+            animation: iconGlow 1s infinite alternate;
+        }
+        .feature-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            transition: 0.3s;
+        }
+        .feature-card:hover h3 {
+            text-shadow: 0 0 15px rgba(192,132,252,0.8);
+            transform: scale(1.05);
+        }
+        .feature-card p {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+        }
+
+        /* testimonials carousel */
+        .testimonials {
+            margin: 6rem 0;
+        }
+        .carousel {
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 2.5rem;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .testimonial-card {
+            flex: 0 0 100%;
+            background: rgba(20,15,35,0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 2.5rem;
+            padding: 3rem;
+            text-align: center;
+            animation: testimonialGlow 4s infinite alternate;
+        }
+        .testimonial-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            margin-bottom: 2rem;
+            color: rgba(255,255,255,0.9);
+        }
+        .testimonial-author {
+            font-weight: 600;
+            color: #c084fc;
+        }
+
+        /* footer */
+        .footer {
+            margin-top: 6rem;
+            padding: 3rem 2rem 2rem;
+            background: rgba(8,6,18,0.7);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(139,92,246,0.2);
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* ===== NEW INSANE ANIMATIONS ===== */
+        @keyframes wordPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.2) translateY(100px);
+                text-shadow: 0 0 0 rgba(192,132,252,0);
+            }
+            60% {
+                opacity: 1;
+                transform: scale(1.1) translateY(-10px);
+                text-shadow: 0 0 30px rgba(192,132,252,0.9), 0 0 60px #8b5cf6;
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                text-shadow: 0 0 40px rgba(139,92,246,0.5);
+            }
+        }
+
+        @keyframes glowPulse {
+            0% { text-shadow: 0 0 10px #c084fc, 0 0 20px #8b5cf6; }
+            50% { text-shadow: 0 0 30px #c084fc, 0 0 60px #8b5cf6; transform: scale(1.05); }
+            100% { text-shadow: 0 0 10px #c084fc, 0 0 20px #8b5cf6; }
+        }
+
+        @keyframes iconGlow {
+            from { filter: drop-shadow(0 0 5px #c084fc); }
+            to { filter: drop-shadow(0 0 25px #c084fc) drop-shadow(0 0 50px #8b5cf6); }
+        }
+
+        @keyframes testimonialGlow {
+            0% { box-shadow: 0 0 20px rgba(139,92,246,0.2); }
+            100% { box-shadow: 0 0 40px rgba(192,132,252,0.6); }
+        }
+
+        /* fadeUp remains */
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* hover glow for stat cards */
+        .stat-card:hover .stat-number {
+            animation: glowPulse 1s infinite;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-<body class="page-fade-in">
+<body>
+    <!-- Three.js canvas container -->
+    <div id="canvas-container"></div>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
     <nav class="navbar">
-        <div class="container">
-            <div class="logo">AgroDetect AI</div>
+        <div class="nav-container">
+            <div class="logo">agrodetect<span style="color:white;">.</span>ai</div>
             <div class="nav-links">
                 <a href="{{ url_for('home') }}">Home</a>
                 <a href="{{ url_for('about') }}">About</a>
-                <a href="{{ url_for('upload') }}">Detect Disease</a>
+                <a href="{{ url_for('upload') }}">Upload</a>
             </div>
+            <a href="{{ url_for('upload') }}" class="btn-outline-small">Try Now</a>
         </div>
     </nav>
 
     <main>
         <section class="hero">
-            <div class="container">
-                <h1 class="pulse-text">AI-Powered Plant Disease Detection</h1>
-                <p>Protect your crops with instant, accurate disease identification. Just upload a leaf photo and get results in seconds.</p>
+            <div class="container hero-content">
+                <h1 class="hero-title">AI that sees what your crops are missing</h1>
+                <p class="hero-subtitle">Identify plant diseases in seconds with 98% accuracy. Get organic & chemical treatment plans instantly.</p>
                 <div class="hero-buttons">
-                    <a href="{{ url_for('upload') }}" class="btn btn-primary">Get Started</a>
-                    <a href="{{ url_for('about') }}" class="btn btn-outline">Learn More</a>
+                    <a href="{{ url_for('upload') }}" class="btn-primary"><i class="fas fa-camera"></i> Detect Disease</a>
+                    <a href="{{ url_for('about') }}" class="btn-outline"><i class="fas fa-info-circle"></i> How it works</a>
                 </div>
             </div>
         </section>
 
-        <section class="container">
+        <div class="container">
+            <!-- stats with count-up + glow -->
+            <div class="stats-grid">
+                <div class="stat-card fade-up">
+                    <div class="stat-number" id="stat1">0</div>
+                    <div class="stat-label">Detections</div>
+                </div>
+                <div class="stat-card fade-up">
+                    <div class="stat-number" id="stat2">0</div>
+                    <div class="stat-label">Disease Classes</div>
+                </div>
+                <div class="stat-card fade-up">
+                    <div class="stat-number" id="stat3">0</div>
+                    <div class="stat-label">Accuracy %</div>
+                </div>
+            </div>
+
+            <!-- features -->
+            <h2 class="section-title">Why farmers trust AgroDetect</h2>
             <div class="features-grid">
-                <div class="feature-card glass-card reveal delay-100">
-                    <i class="fas fa-camera feature-icon"></i>
-                    <h3>Instant Detection</h3>
-                    <p>Upload a photo and our AI identifies diseases in real-time with high accuracy.</p>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Instant Diagnosis</h3>
+                    <p>Upload a leaf photo and get results in under 2 seconds, with confidence scoring.</p>
                 </div>
-                <div class="feature-card glass-card reveal delay-200">
-                    <i class="fas fa-database feature-icon"></i>
-                    <h3>50+ Diseases</h3>
-                    <p>Trained on a comprehensive dataset of common plant diseases across multiple crops.</p>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-leaf"></i></div>
+                    <h3>Organic Solutions</h3>
+                    <p>Eco-friendly treatment recommendations tailored to each disease.</p>
                 </div>
-                <div class="feature-card glass-card reveal delay-300">
-                    <i class="fas fa-chart-line feature-icon"></i>
-                    <h3>Confidence Score</h3>
-                    <p>Get a precise confidence percentage along with treatment recommendations.</p>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-flask"></i></div>
+                    <h3>Chemical Guides</h3>
+                    <p>Precise chemical interventions with product links and safety tips.</p>
                 </div>
-                <div class="feature-card glass-card reveal delay-400">
-                    <i class="fas fa-mobile-alt feature-icon"></i>
-                    <h3>Mobile Friendly</h3>
-                    <p>Use on any device – perfect for field work and quick checks.</p>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-globe"></i></div>
+                    <h3>Global Database</h3>
+                    <p>38 diseases covering major crops like tomato, potato, apple, corn, and more.</p>
                 </div>
             </div>
-        </section>
 
-        <section class="container reveal">
-            <div class="stats-section glass-card fade-in-scale">
-                <div class="stat-item">
-                    <div class="stat-number">10K+</div>
-                    <div class="stat-label">Farmers Helped</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">95%</div>
-                    <div class="stat-label">Accuracy</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">50+</div>
-                    <div class="stat-label">Diseases</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Availability</div>
+            <!-- testimonials carousel -->
+            <div class="testimonials">
+                <div class="carousel" id="testimonialCarousel">
+                    <div class="carousel-track">
+                        <div class="testimonial-card">
+                            <p class="testimonial-text">“Saved my entire tomato crop from early blight. The organic recommendations were spot on!”</p>
+                            <div class="testimonial-author">— Maria G., organic farmer</div>
+                        </div>
+                        <div class="testimonial-card">
+                            <p class="testimonial-text">“Incredible accuracy. We now use it in our research lab for rapid screening.”</p>
+                            <div class="testimonial-author">— Dr. Alan Chen, plant pathologist</div>
+                        </div>
+                        <div class="testimonial-card">
+                            <p class="testimonial-text">“The Amazon product links save hours of searching. A game changer.”</p>
+                            <div class="testimonial-author">— Samuel O., agri‑tech advisor</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>AgroDetect AI</h4>
-                    <ul>
-                        <li><a href="{{ url_for('home') }}">Home</a></li>
-                        <li><a href="{{ url_for('about') }}">About</a></li>
-                        <li><a href="{{ url_for('upload') }}">Detection</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><i class="fas fa-envelope"></i> hello@agrodetect.ai</li>
-                        <li><i class="fas fa-phone"></i> +91 8919136112</li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Follow Us</h4>
-                    <ul>
-                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                        <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
-                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2025 AgroDetect AI. All rights reserved.
-            </div>
-        </div>
+        <p>© 2026 AgroDetect AI — intelligent plant disease detection</p>
+        <p style="margin-top: 1rem; font-size: 0.85rem;">Powered By Team - Dynamic Thinkers · 38 disease classes</p>
     </footer>
 
     <script>
-        // Intersection Observer for Scroll Animations
-        const observerOptions = { threshold: 0.15 };
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
+        // count-up stats
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerText = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
                 }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Smooth Page Out Transition
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', e => {
-                if (link.hostname === window.location.hostname && !link.hash && !link.target) {
-                    e.preventDefault();
-                    const destination = link.href;
-                    document.body.style.opacity = '0';
-                    document.body.style.transition = 'opacity 0.4s ease';
-                    setTimeout(() => { window.location.href = destination; }, 400);
-                }
-            });
-        });
-
-        // Hover Glow Effect for Glass Cards
-        document.querySelectorAll('.glass-card').forEach(card => {
-            card.onmousemove = e => {
-                const rect = card.getBoundingClientRect();
-                card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-                card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
             };
+            window.requestAnimationFrame(step);
+        }
+
+        window.onload = () => {
+            animateValue('stat1', 0, 500, 2000);
+            animateValue('stat2', 0, 38, 1500);
+            animateValue('stat3', 0, 98, 1800);
+        };
+
+        // carousel auto slide
+        const track = document.querySelector('.carousel-track');
+        let index = 0;
+        setInterval(() => {
+            index = (index + 1) % 3;
+            track.style.transform = `translateX(-${index * 100}%)`;
+        }, 5000);
+
+        // ========== THREE.JS GALAXY BACKGROUND (unchanged, perfect) ==========
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount * 3; i += 3) {
+            posArray[i] = (Math.random() - 0.5) * 30;
+            posArray[i+1] = (Math.random() - 0.5) * 30;
+            posArray[i+2] = (Math.random() - 0.5) * 30;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0xa855f7,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.0005;
+            particlesMesh.rotation.x += 0.0003;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
